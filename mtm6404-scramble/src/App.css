@@ -1,0 +1,82 @@
+/* GENERAL PAGE */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5efe6; /* light beige */
+  color: #3e2f1c; /* dark brown text */
+}
+
+/* MAIN CONTAINER */
+.container {
+  text-align: center;
+  padding: 40px;
+}
+
+/* TITLE */
+h1 {
+  color: #5c3d2e; /* rich brown */
+  margin-bottom: 20px;
+}
+
+/* SCRAMBLED WORD */
+h2 {
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: #7a5230;
+}
+
+/* INPUT BOX */
+input {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #a67c52;
+  border-radius: 8px;
+  margin-top: 10px;
+  outline: none;
+  background-color: #fffaf3;
+  color: #3e2f1c;
+}
+
+/* INPUT FOCUS */
+input:focus {
+  border-color: #5c3d2e;
+}
+
+/* BUTTON */
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #8b5e34; /* brown */
+  color: white;
+  cursor: pointer;
+}
+
+/* BUTTON HOVER */
+button:hover {
+  background-color: #6f4727;
+}
+
+/* SCORE TEXT */
+p {
+  margin: 8px 0;
+}
+
+/* MESSAGE STYLES */
+.correct {
+  color: green;
+  font-weight: bold;
+}
+
+.incorrect {
+  color: red;
+  font-weight: bold;
+}
+
+/* GAME OVER */
+.game-over {
+  font-size: 1.5rem;
+  color: #5c3d2e;
+}

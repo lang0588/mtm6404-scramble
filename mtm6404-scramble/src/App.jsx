@@ -1,41 +1,32 @@
+import React, { useState, useEffect } from "react";
+import "./App.css";
+
 /**********************************************
- * STARTER CODE
+ * shuffle function (given)
  **********************************************/
+function shuffle(src) {
+  const copy = [...src];
 
-/**
- * shuffle()
- * Shuffle the contents of an array
- *   depending the datatype of the source
- * Makes a copy. Does NOT shuffle the original.
- * Based on Steve Griffith's array shuffle prototype
- * @Parameters: Array or string
- * @Return: Scrambled Array or string, based on the provided parameter
- */
-function shuffle (src) {
-  const copy = [...src]
-
-  const length = copy.length
+  const length = copy.length;
   for (let i = 0; i < length; i++) {
-    const x = copy[i]
-    const y = Math.floor(Math.random() * length)
-    const z = copy[y]
-    copy[i] = z
-    copy[y] = x
+    const x = copy[i];
+    const y = Math.floor(Math.random() * length);
+    const z = copy[y];
+    copy[i] = z;
+    copy[y] = x;
   }
 
-  if (typeof src === 'string') {
-    return copy.join('')
+  if (typeof src === "string") {
+    return copy.join("");
   }
 
-  return copy
+  return copy;
 }
 
-/**********************************************
- * YOUR CODE BELOW
- **********************************************/
-
 function App() {
-  // word list (at least 10, no spaces/special chars)
+  /**********************************************
+   * WORD LIST
+   **********************************************/
   const wordList = [
     "react",
     "javascript",
@@ -47,13 +38,14 @@ function App() {
     "array",
     "string",
     "element",
-    "component",
   ];
 
   const MAX_STRIKES = 3;
   const MAX_PASSES = 3;
 
-  // state
+  /**********************************************
+   * STATE
+   **********************************************/
   const [words, setWords] = useState([]);
   const [currentWord, setCurrentWord] = useState("");
   const [scrambled, setScrambled] = useState("");
@@ -65,19 +57,36 @@ function App() {
   const [gameOver, setGameOver] = useState(false);
 
   /**********************************************
+   * START GAME
+   **********************************************/
+  function startGame() {
+    const shuffledWords = shuffle(wordList);
+    const firstWord = shuffledWords[0];
+
+    setWords(shuffledWords.slice(1));
+    setCurrentWord(firstWord);
+    setScrambled(shuffle(firstWord));
+    setPoints(0);
+    setStrikes(0);
+    setPasses(MAX_PASSES);
+    setMessage("");
+    setGameOver(false);
+  }
+
+  /**********************************************
    * LOAD FROM LOCAL STORAGE
    **********************************************/
   useEffect(() => {
-    const savedGame = JSON.parse(localStorage.getItem("scrambleGame"));
+    const saved = JSON.parse(localStorage.getItem("scrambleGame"));
 
-    if (savedGame) {
-      setWords(savedGame.words);
-      setCurrentWord(savedGame.currentWord);
-      setScrambled(savedGame.scrambled);
-      setPoints(savedGame.points);
-      setStrikes(savedGame.strikes);
-      setPasses(savedGame.passes);
-      setGameOver(savedGame.gameOver);
+    if (saved) {
+      setWords(saved.words);
+      setCurrentWord(saved.currentWord);
+      setScrambled(saved.scrambled);
+      setPoints(saved.points);
+      setStrikes(saved.strikes);
+      setPasses(saved.passes);
+      setGameOver(saved.gameOver);
     } else {
       startGame();
     }
@@ -101,27 +110,25 @@ function App() {
   }, [words, currentWord, scrambled, points, strikes, passes, gameOver]);
 
   /**********************************************
-   * START / RESET GAME
+   * NEXT WORD
    **********************************************/
-  function startGame() {
-    const shuffledWords = shuffle(wordList);
-    const firstWord = shuffledWords[0];
+  function nextWord() {
+    if (words.length === 0) {
+      setGameOver(true);
+      return;
+    }
 
-    setWords(shuffledWords.slice(1));
-    setCurrentWord(firstWord);
-    setScrambled(shuffle(firstWord));
-    setPoints(0);
-    setStrikes(0);
-    setPasses(MAX_PASSES);
-    setMessage("");
-    setGameOver(false);
+    const next = words[0];
+    setCurrentWord(next);
+    setScrambled(shuffle(next));
+    setWords(words.slice(1));
   }
 
   /**********************************************
    * HANDLE GUESS
    **********************************************/
   function handleSubmit(e) {
-    e.preventDefault(); // prevent refresh
+    e.preventDefault();
 
     if (gameOver) return;
 
@@ -139,32 +146,17 @@ function App() {
       }
     }
 
-    setGuess(""); // clear input
+    setGuess("");
   }
 
   /**********************************************
-   * NEXT WORD
-   **********************************************/
-  function nextWord() {
-    if (words.length === 0) {
-      setGameOver(true);
-      return;
-    }
-
-    const next = words[0];
-    setCurrentWord(next);
-    setScrambled(shuffle(next));
-    setWords(words.slice(1));
-  }
-
-  /**********************************************
-   * PASS WORD
+   * HANDLE PASS
    **********************************************/
   function handlePass() {
     if (passes <= 0 || gameOver) return;
 
     setPasses(passes - 1);
-    setMessage("Word skipped!");
+    setMessage("Skipped!");
     nextWord();
   }
 
@@ -172,7 +164,7 @@ function App() {
    * UI
    **********************************************/
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="container">
       <h1>Scramble Game</h1>
 
       {!gameOver ? (
@@ -184,10 +176,12 @@ function App() {
               type="text"
               value={guess}
               onChange={(e) => setGuess(e.target.value)}
+              placeholder="Enter your guess"
             />
           </form>
 
-          <p>{message}</p>
+          <p className={message === "Correct!" ? "correct" : message === "Incorrect!" ? "incorrect" : ""}>
+  {message}</p>
 
           <p>Points: {points}</p>
           <p>Strikes: {strikes}</p>
